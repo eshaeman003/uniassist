@@ -1,0 +1,214 @@
+/* ============================================================
+   Public site + app-shell layout
+   ============================================================ */
+
+/* ---------- Public navbar ---------- */
+.public-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.public-navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  max-width: var(--container-w);
+  margin: 0 auto;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 700;
+  font-size: 1.08rem;
+  color: var(--text);
+}
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--lilac), var(--lilac-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+.public-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.public-nav-links a {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color var(--transition);
+}
+.public-nav-links a:hover, .public-nav-links a.active { color: var(--lilac-dark); }
+.public-nav-actions { display: flex; align-items: center; gap: 10px; }
+
+.mobile-menu-btn { display: none; background: none; border: none; color: var(--text); cursor: pointer; padding: 6px; }
+.mobile-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: var(--white);
+  padding: 20px 24px;
+  animation: fadeIn 140ms ease-out;
+}
+.mobile-drawer-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+.mobile-drawer nav { display: flex; flex-direction: column; gap: 22px; margin-bottom: 28px; }
+.mobile-drawer nav a { font-size: 1.05rem; font-weight: 600; }
+.mobile-drawer-actions { display: flex; flex-direction: column; gap: 10px; }
+
+@media (max-width: 860px) {
+  .public-nav-links { display: none; }
+  .public-nav-actions .btn-secondary { display: none; }
+  .mobile-menu-btn { display: inline-flex; }
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface-sunken);
+  padding: 48px 24px 28px;
+  margin-top: 96px;
+}
+.footer-inner {
+  max-width: var(--container-w);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+.footer-col h5 { font-size: 0.8rem; color: var(--text-faint); margin-bottom: 12px; text-transform: none; }
+.footer-col a, .footer-col p { display: block; font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 9px; }
+.footer-col a:hover { color: var(--lilac-dark); }
+.footer-bottom {
+  max-width: var(--container-w);
+  margin: 32px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text-faint);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ---------- App shell (student + admin) ---------- */
+.app-shell { display: flex; min-height: 100vh; background: var(--surface-sunken); }
+
+.app-sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 22px 16px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.app-sidebar-brand { padding: 6px 10px 22px; }
+.app-nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.app-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.89rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: background var(--transition), color var(--transition);
+}
+.app-nav-link:hover { background: var(--lilac-soft); color: var(--lilac-dark); }
+.app-nav-link.active { background: var(--lilac-light); color: var(--lilac-dark); font-weight: 600; }
+.app-nav-divider { height: 1px; background: var(--border); margin: 14px 10px; }
+.app-sidebar-footer { display: flex; flex-direction: column; gap: 2px; }
+
+.app-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.app-topbar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+.app-content { padding: 28px 32px 60px; flex: 1; }
+
+.app-user-chip { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius-md); }
+.app-user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--lilac-dark);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.app-user-meta { display: flex; flex-direction: column; overflow: hidden; }
+.app-user-meta strong { font-size: 0.84rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-user-meta span { font-size: 0.75rem; color: var(--text-faint); }
+
+.app-mobile-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(37,33,45,0.4);
+  z-index: 70;
+}
+.app-mobile-drawer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 260px;
+  background: var(--white);
+  z-index: 80;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  animation: slideInLeft 180ms ease-out;
+}
+@keyframes slideInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+
+@media (max-width: 960px) {
+  .app-sidebar { display: none; }
+  .app-topbar { display: flex; }
+  .app-content { padding: 20px 16px 48px; }
+}
+
+/* ---------- Hero mockup (landing page) ---------- */
+.hero-mock {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.hero-mock-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-sunken);
+}
+.hero-mock-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }

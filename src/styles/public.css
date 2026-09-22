@@ -1,0 +1,208 @@
+/* ============================================================
+   Public marketing pages
+   ============================================================ */
+
+.hero-section { padding: 72px 24px 40px; }
+.hero-grid {
+  max-width: var(--container-w);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 56px;
+  align-items: center;
+}
+.eyebrow-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--lilac-soft);
+  color: var(--lilac-dark);
+  border-radius: var(--radius-full);
+  padding: 7px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 22px;
+}
+.hero-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 4.4vw, 3.6rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  margin-bottom: 22px;
+}
+.hero-sub {
+  font-size: 1.08rem;
+  color: var(--text-secondary);
+  max-width: 480px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+.hero-cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 36px; }
+.hero-trust { display: flex; align-items: center; gap: 10px; font-size: 0.82rem; color: var(--text-faint); }
+
+@media (max-width: 980px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-section { padding: 44px 20px 20px; }
+}
+
+/* ---------- section shells ---------- */
+.section { padding: 84px 24px; }
+.section-sunken { background: var(--surface-sunken); }
+.section-inner { max-width: var(--container-w); margin: 0 auto; }
+.section-heading { text-align: left; max-width: 620px; margin-bottom: 44px; }
+.section-heading h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 2.6vw, 2.3rem);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+.section-heading p { color: var(--text-secondary); font-size: 1rem; line-height: 1.6; }
+
+/* ---------- how it works steps ---------- */
+.steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.step-card { padding: 26px 22px; }
+.step-index { font-family: var(--font-display); font-size: 1.7rem; color: var(--lilac); margin-bottom: 14px; }
+.step-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background: var(--lilac-soft);
+  color: var(--lilac-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.step-card h3 { font-size: 1.02rem; margin-bottom: 8px; }
+.step-card p { font-size: 0.87rem; color: var(--text-secondary); line-height: 1.55; }
+
+@media (max-width: 900px) { .steps-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .steps-grid { grid-template-columns: 1fr; } }
+
+/* ---------- feature rows ---------- */
+.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.feature-card { padding: 26px 22px; }
+.feature-card .step-icon-wrap { margin-bottom: 14px; }
+.feature-card h3 { font-size: 1.02rem; margin-bottom: 8px; }
+.feature-card p { font-size: 0.87rem; color: var(--text-secondary); line-height: 1.55; }
+@media (max-width: 900px) { .feature-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .feature-grid { grid-template-columns: 1fr; } }
+
+/* ---------- privacy spotlight ---------- */
+.privacy-spotlight {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.privacy-spotlight-visual {
+  background: linear-gradient(160deg, var(--lilac-soft), var(--white));
+  border: 1px solid var(--lilac-light);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+@media (max-width: 900px) { .privacy-spotlight { grid-template-columns: 1fr; } }
+
+/* ---------- universities strip ---------- */
+.uni-strip { display: flex; flex-wrap: wrap; gap: 14px; }
+.uni-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--white);
+}
+
+/* ---------- CTA banner ---------- */
+.cta-banner {
+  background: linear-gradient(135deg, var(--lilac-dark), var(--lilac-deep));
+  border-radius: var(--radius-lg);
+  padding: 56px 40px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.cta-banner h2 { font-family: var(--font-display); font-size: 1.8rem; color: white; margin-bottom: 8px; }
+.cta-banner p { color: rgba(255,255,255,0.82); font-size: 0.95rem; }
+.cta-banner .btn-primary { background: white; color: var(--lilac-dark); }
+.cta-banner .btn-primary:hover { background: var(--lilac-soft); }
+
+/* ---------- auth pages ---------- */
+.auth-shell {
+  min-height: calc(100vh - 73px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  background:
+    radial-gradient(circle at 15% 10%, var(--lilac-soft), transparent 45%),
+    radial-gradient(circle at 90% 90%, var(--lilac-light), transparent 40%);
+}
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 38px 36px;
+}
+.auth-card.wide { max-width: 620px; }
+.auth-head { margin-bottom: 26px; }
+.auth-head h1 { font-family: var(--font-display); font-size: 1.55rem; margin-bottom: 8px; }
+.auth-head p { color: var(--text-secondary); font-size: 0.9rem; }
+.auth-form { display: flex; flex-direction: column; gap: 16px; }
+.auth-divider { display: flex; align-items: center; gap: 12px; margin: 22px 0; color: var(--text-faint); font-size: 0.78rem; }
+.auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.auth-footer-note { text-align: center; margin-top: 22px; font-size: 0.87rem; color: var(--text-secondary); }
+.auth-footer-note a { color: var(--lilac-dark); font-weight: 600; }
+.role-switch { display: flex; background: var(--surface-sunken); border-radius: var(--radius-md); padding: 4px; margin-bottom: 22px; }
+.role-switch button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 9px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.role-switch button.active { background: var(--white); color: var(--lilac-dark); box-shadow: var(--shadow-sm); }
+
+.success-shell {
+  min-height: calc(100vh - 73px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+}
+.success-card {
+  max-width: 460px;
+  text-align: center;
+  padding: 44px 36px;
+}
+.success-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--success-bg);
+  color: var(--success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+.success-card h1 { font-size: 1.4rem; margin-bottom: 10px; }
+.success-card p { color: var(--text-secondary); font-size: 0.92rem; line-height: 1.6; margin-bottom: 10px; }
