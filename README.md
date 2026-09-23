@@ -162,14 +162,6 @@ In Supabase → Authentication → URL Configuration, add your Vercel domain to 
 
 ---
 
-## Known limitations
-
-- No email confirmation is enforced (turned off for demo purposes) — re-enable before any real-world use.
-- Only one seeded university (`CUST`) is active in the current dataset; the multi-university flow exists but has been tested with one institution end-to-end.
-- No automated tests yet.
-- This is an internship learning project, not a security-audited production system — do not use with real personal data as-is.
-
----
 
 ## Author
 
