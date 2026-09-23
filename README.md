@@ -114,22 +114,6 @@ git clone https://github.com/eshaeman003/uniassist.git
 cd uniassist
 npm install
 ```
-
-### 2. Configure environment variables
-
-Copy the example file and fill in your own Supabase project's credentials (found in Supabase → Project Settings → API):
-
-```bash
-cp .env.example .env
-```
-
-```env
-VITE_SUPABASE_URL=https://your-project-ref.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-public-key
-```
-
-`.env` is git-ignored and must never be committed. The anon key is safe to expose in a client app **only because** RLS policies are enforced on every table — without RLS, do not ship this.
-
 ### 3. Run locally
 
 ```bash
