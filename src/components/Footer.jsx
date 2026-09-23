@@ -9,7 +9,7 @@ export default function Footer() {
             <span className="brand-mark" style={{ width: 28, height: 28 }}>U</span>
             UniAssist
           </div>
-          <p>A safer, smarter campus for everyone. Currently a prototype built for demonstration purposes.</p>
+          <p>A safer, smarter campus for everyone.</p>
         </div>
         <div className="footer-col">
           <h5>Product</h5>
@@ -24,13 +24,11 @@ export default function Footer() {
         </div>
         <div className="footer-col">
           <h5>Status</h5>
-          <p>Prototype build — mock data only.</p>
+          <p>Prototype build.</p>
         </div>
       </div>
       <div className="footer-bottom">
-        <span>© {new Date().getFullYear()} UniAssist. A student project prototype.</span>
-        <span>Not affiliated with any university unless registered.</span>
-      </div>
+        <span>© {new Date().getFullYear()} UniAssist. A student project.</span>      </div>
     </footer>
   );
 }
