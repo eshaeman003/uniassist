@@ -180,4 +180,4 @@ After deployment, configure the Vercel domain in Supabase Authentication setting
 **Esha Eman**
 BS Software Engineering — CUST University
 
-UniAssist was developed as a **full-stack web application during a Web Development Internship at Factory Web Services**, combining frontend development, authentication, database management, role-based access control, Row Level Security, and realtime functionality.
+UniAssist was developed as a **full-stack web application during a Web Development Internship at Factory Web Services**, combining frontend development, authentication, database management, role-based access control, Row Level Security, and realtime functionality under the supervision of mentor "massab hassan".
