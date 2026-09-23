@@ -1,76 +1,83 @@
 # UniAssist
 
-UniAssist is a campus safety and student-services platform. Students can submit incident reports and post lost & found items for their university; administrators triage, update, and resolve them from a dedicated dashboard. Each university's data is isolated from every other university's.
+UniAssist is a **full-stack campus safety and student-services web application**. Students can submit incident reports and post Lost & Found items for their university, while administrators can triage, update, and resolve reports through a dedicated dashboard. The platform supports multiple universities with isolated data for each institution.
 
-**Live demo:** 
-**Status:**  internship project 
+**Live Demo:** —
+**Project Type:** Full-Stack Web Application
 
 ---
 
 ## Features
 
-**Students**
-- Register and sign in under their own university
-- Submit incident reports (category, location, priority, anonymous option)
-- Track report status and see admin updates on a live timeline
-- Post and browse Lost & Found items
-- View university announcements
+### Students
 
-**Administrators**
-- Register a new university (creates the institution + first admin account)
-- View and triage all reports for their university
-- Update report status, priority, department, and leave public/internal notes
-- Every status change is logged to a timeline the student can see
-- Manage Lost & Found posts (resolve, reopen, remove)
-- Post announcements
-- Basic analytics overview (report volume, status breakdown)
+* Register and sign in under their own university
+* Submit incident reports with category, location, priority, and anonymous options
+* Track report status and view admin updates through a live timeline
+* Post and browse Lost & Found items
+* View university announcements
 
-**Platform**
-- Multi-tenant by design: every record is scoped to a `university_id`
-- Row Level Security (RLS) enforced at the database level, not just in the UI
-- Realtime updates: students see admin changes without refreshing
+### Administrators
 
----
+* Register a new university and create the first admin account
+* View and triage reports belonging to their university
+* Update report status, priority, department, and notes
+* Maintain a timeline of report status changes
+* Manage Lost & Found posts
+* Post university announcements
+* View basic analytics including report volume and status breakdown
 
-## Tech stack
+### Platform
 
-| Layer | Choice |
-|---|---|
-| Frontend | React (Vite) |
-| Routing | React Router |
-| Backend / DB | [Supabase](https://supabase.com) — Postgres, Auth, Realtime, Row Level Security |
-| Icons | lucide-react |
-| Hosting | Vercel |
-
-Supabase is not a separate service you run — it's a hosted Postgres database plus an auth/realtime layer. The "backend" of this app is the Supabase project (tables + RLS policies), accessed directly from the React client through `@supabase/supabase-js`. There is no custom Node/Express server.
+* Multi-tenant architecture with every record scoped to a `university_id`
+* Row Level Security (RLS) enforced at the database level
+* Authentication and role-based access control
+* Realtime updates without requiring page refreshes
+* Separate student and administrator workflows
 
 ---
 
-## Project structure
+## Tech Stack
 
-```
+| Layer              | Technology               |
+| ------------------ | ------------------------ |
+| Frontend           | React + Vite             |
+| Routing            | React Router             |
+| Backend & Database | Supabase                 |
+| Database           | PostgreSQL               |
+| Authentication     | Supabase Auth            |
+| Security           | Row Level Security (RLS) |
+| Realtime           | Supabase Realtime        |
+| Icons              | Lucide React             |
+| Hosting            | Vercel                   |
+
+Supabase provides the application's backend infrastructure through PostgreSQL, authentication, realtime functionality, and Row Level Security. The React client communicates with Supabase through `@supabase/supabase-js`. The application does not use a separate Node.js/Express server.
+
+---
+
+## Project Structure
+
+```text
 uniassist/
 ├── public/
 ├── src/
 │   ├── assets/
-│   ├── components/         # Reusable UI: Button, Input, StatusBadge, ReportTimeline, etc.
-│   ├── context/             # AuthContext, ToastContext
-│   ├── data/                 # Static reference data (universities list, mock fallback data)
-│   ├── layouts/             # AppLayout (authenticated shell), PublicLayout
+│   ├── components/          # Reusable UI components
+│   ├── context/             # Authentication and application contexts
+│   ├── data/                # Reference and fallback data
+│   ├── layouts/             # Application layouts
 │   ├── lib/
-│   │   └── supabaseClient.js # Supabase client instance
+│   │   └── supabaseClient.js
 │   ├── pages/
-│   │   ├── public/           # Landing, Login, RegisterStudent, RegisterUniversity, About, HowItWorks
-│   │   ├── student/          # Dashboard, ReportsList, ReportNew, ReportDetails, LostFound, Announcements, Profile, Settings
-│   │   └── admin/            # AdminDashboard, AdminReports, AdminReportDetails, AdminLostFound,
-│   │                          # AdminLostFoundDetails, AdminAnnouncements, AdminStudents, AdminAnalytics, AdminSettings
-│   ├── services/             # One file per domain: authService, reportService, lostFoundService,
-│   │                          # universityService, announcementService — all Supabase queries live here
+│   │   ├── public/           # Landing, authentication, About, How It Works
+│   │   ├── student/          # Student dashboard and services
+│   │   └── admin/            # Administrative dashboard and management
+│   ├── services/             # Supabase data and business logic
 │   ├── styles/
 │   ├── utils/
-│   ├── App.jsx                # Route definitions
+│   ├── App.jsx               # Route definitions
 │   └── main.jsx
-├── .env                        # Local only — never committed
+├── .env                      # Local environment variables
 ├── .env.example
 ├── .gitignore
 ├── index.html
@@ -80,74 +87,96 @@ uniassist/
 
 ---
 
-## Data model (Supabase)
+## Data Model (Supabase)
 
-| Table | Purpose |
-|---|---|
-| `universities` | One row per registered institution |
-| `profiles` | User accounts (student / admin), linked to `auth.users` and to a `university_id` |
-| `reports` | Incident reports, scoped to `university_id` and `user_id` |
-| `report_timeline` | Status-change log for a report, shown to both student and admin |
-| `lost_found_items` | Lost & found posts, scoped to `university_id` |
+| Table              | Purpose                                        |
+| ------------------ | ---------------------------------------------- |
+| `universities`     | Stores registered institutions                 |
+| `profiles`         | Stores student and administrator profiles      |
+| `reports`          | Stores incident reports by university and user |
+| `report_timeline`  | Stores report status-change history            |
+| `lost_found_items` | Stores Lost & Found posts by university        |
 
-**Row Level Security** is enabled on every table. In short:
-- Anyone (even signed out) can read the `universities` list and insert a new one (registration flow).
-- A student can read/insert their own `reports` and `lost_found_items`.
-- An admin can read/update all `reports` and `lost_found_items` belonging to their own `university_id` only — never another university's data.
-- Only admins can insert into `report_timeline`.
+### Row Level Security
 
-The exact policy definitions live in your Supabase project (SQL Editor → Policies). If you're setting this project up from scratch, recreate the tables and policies before running the app — the app assumes they already exist and does not create them.
+Row Level Security is enabled across the application's database tables to ensure that university data remains isolated.
+
+* Students can access their own reports and Lost & Found items.
+* Administrators can manage reports and Lost & Found items belonging to their own university.
+* Users cannot access another university's protected data.
+* Administrative report updates are recorded in the report timeline.
+
+The exact RLS policies are configured in the Supabase project.
 
 ---
 
-## Getting started
+## Getting Started
 
 ### Prerequisites
-- Node.js 18+ and npm
-- A free [Supabase](https://supabase.com) project
-- A GitHub account (for deployment via Vercel)
 
-### 1. Clone and install
+* Node.js 18+ and npm
+* A Supabase project
+* Git
+
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/eshaeman003/uniassist.git
 cd uniassist
 npm install
 ```
-### 3. Run locally
+
+### 2. Configure Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### 3. Run Locally
 
 ```bash
 npm run dev
 ```
 
-The app runs at `http://localhost:5173`.
+The application will run at:
 
-### 4. Build for production
+```text
+http://localhost:5173
+```
+
+### 4. Build for Production
 
 ```bash
 npm run build
-npm run preview   # sanity-check the production build locally
+npm run preview
 ```
 
 ---
 
-## Deployment (Vercel)
+## Deployment
 
-1. Push the repo to GitHub (already done for this project).
-2. In Vercel: **New Project → Import** your GitHub repo.
-3. Framework preset: **Vite** (Vercel usually auto-detects this).
-4. Build command: `npm run build` · Output directory: `dist` (Vercel defaults are correct for Vite).
-5. Under **Environment Variables**, add the same two keys as your local `.env`:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
-6. Deploy. Every push to `main` will auto-redeploy.
+UniAssist can be deployed through Vercel.
 
-In Supabase → Authentication → URL Configuration, add your Vercel domain to the allowed redirect URLs once you have it, so auth flows work in production and not just on localhost.
+1. Import the GitHub repository into Vercel.
+2. Select **Vite** as the framework preset.
+3. Use `npm run build` as the build command.
+4. Use `dist` as the output directory.
+5. Add the required Supabase environment variables:
+
+   * `VITE_SUPABASE_URL`
+   * `VITE_SUPABASE_ANON_KEY`
+6. Deploy the application.
+
+After deployment, configure the Vercel domain in Supabase Authentication settings so authentication flows work correctly in production.
 
 ---
 
-
 ## Author
 
-Esha Eman — BS(SE), CUST University
-Built as part of a Web Development Internship at Factory Web Services.
+**Esha Eman**
+BS Software Engineering — CUST University
+
+UniAssist was developed as a **full-stack web application during a Web Development Internship at Factory Web Services**, combining frontend development, authentication, database management, role-based access control, Row Level Security, and realtime functionality.
