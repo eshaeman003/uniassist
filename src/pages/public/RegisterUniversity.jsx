@@ -26,6 +26,7 @@ export default function RegisterUniversity() {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const navigate = useNavigate();
   const { refreshUser } = useAuth();
@@ -53,13 +54,16 @@ export default function RegisterUniversity() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitError('');
     if (!validate()) return;
     setSubmitting(true);
     const res = await authService.registerUniversity(form);
     setSubmitting(false);
     if (res.ok) {
-      refreshUser();
+      await refreshUser();
       setSuccess(true);
+    } else {
+      setSubmitError(res.error || 'Something went wrong. Please try again.');
     }
   };
 
@@ -138,6 +142,8 @@ export default function RegisterUniversity() {
             I confirm that I am authorized to register this institution.
           </label>
           {errors.authorized && <span className="field-error">{errors.authorized}</span>}
+
+          {submitError && <span className="field-error">{submitError}</span>}
 
           <Button type="submit" variant="primary" block loading={submitting} icon={Building2}>
             Register University

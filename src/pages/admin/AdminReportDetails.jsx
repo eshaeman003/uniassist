@@ -1,74 +1,86 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, EyeOff, User, MapPin, Save } from 'lucide-react';
-import { getReportById, updateReportStatus } from '../../services/reportService';
-import { onStorageChange } from '../../services/storage';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft, MapPin, EyeOff, User, Save } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
+import { getReportById, updateReportStatus } from '../../services/reportService';
 import { REPORT_STATUSES, REPORT_PRIORITIES } from '../../data/mockData';
 import StatusBadge from '../../components/StatusBadge';
 import ReportTimeline from '../../components/ReportTimeline';
 import EmptyState from '../../components/EmptyState';
 import Field from '../../components/Field';
-import Select from '../../components/Select';
 import Input from '../../components/Input';
-import Textarea from '../../components/Textarea';
+import Select from '../../components/Select';
 import Button from '../../components/Button';
 
 export default function AdminReportDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const [report, setReport] = useState(() => getReportById(id));
 
-  const [status, setStatus] = useState('');
-  const [priority, setPriority] = useState('');
-  const [department, setDepartment] = useState('');
-  const [internalNote, setInternalNote] = useState('');
-  const [publicUpdate, setPublicUpdate] = useState('');
+  const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({
+    status: '',
+    priority: '',
+    department: '',
+    internalNote: '',
+    publicUpdate: '',
+  });
 
   useEffect(() => {
-    const r = getReportById(id);
-    setReport(r);
-    if (r) {
-      setStatus(r.status);
-      setPriority(r.priority);
-      setDepartment(r.department || '');
-      setInternalNote(r.internalNote || '');
-      setPublicUpdate(r.publicUpdate || '');
-    }
-    return onStorageChange(() => {
-      const fresh = getReportById(id);
-      setReport(fresh);
-    });
+    const load = async () => {
+      const r = await getReportById(id, true);
+      setReport(r);
+      if (r) {
+        setForm({
+          status: r.status,
+          priority: r.priority,
+          department: r.department || '',
+          internalNote: r.internalNote || '',
+          publicUpdate: r.publicUpdate || '',
+        });
+      }
+      setLoading(false);
+    };
+    load();
   }, [id]);
+
+  const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const handleSave = async () => {
+    setSaving(true);
+    const updated = await updateReportStatus(id, {
+      status: form.status,
+      priority: form.priority,
+      department: form.department,
+      internalNote: form.internalNote,
+      publicUpdate: form.publicUpdate,
+    });
+    setSaving(false);
+    if (updated) {
+      setReport(updated);
+      showToast('Report updated.');
+    } else {
+      showToast('Update failed. Run the RLS policies in Supabase first.');
+    }
+  };
+
+  if (loading) return null;
 
   if (!report) {
     return (
       <EmptyState
         title="Report not found"
         description="This report may have been removed, or the link is incorrect."
-        action={<Link to="/admin/reports" className="btn btn-primary btn-sm">Back to Reports</Link>}
+        action={
+          <Button variant="primary" size="sm" onClick={() => navigate('/admin/reports')}>
+            Back to Reports
+          </Button>
+        }
       />
     );
   }
-
-  const handleSave = (e) => {
-    e.preventDefault();
-    setSaving(true);
-    setTimeout(() => {
-      updateReportStatus(report.id, {
-        status,
-        priority,
-        department,
-        internalNote,
-        publicUpdate,
-        note: publicUpdate || undefined,
-      });
-      setSaving(false);
-      showToast('Report updated. The student will see the new status.');
-    }, 400);
-  };
 
   return (
     <div>
@@ -76,9 +88,9 @@ export default function AdminReportDetails() {
         <ArrowLeft size={16} /> Back
       </button>
 
-      <div className="grid-2" style={{ gridTemplateColumns: '1.3fr 1fr', alignItems: 'start', gap: 24 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <div className="card">
+      <div className="grid-2" style={{ gridTemplateColumns: '1.4fr 1fr', alignItems: 'start', gap: 24 }}>
+        <div>
+          <div className="card" style={{ marginBottom: 20 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 12 }}>
               <div>
                 <span style={{ fontSize: '0.78rem', color: 'var(--text-faint)', fontWeight: 600 }}>{report.id}</span>
@@ -89,49 +101,57 @@ export default function AdminReportDetails() {
 
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
               <span className="badge badge-neutral">{report.category}</span>
-              <span className="badge badge-neutral"><MapPin size={11} /> {report.building}{report.location ? ` — ${report.location}` : ''}</span>
+              <span className="badge badge-neutral">
+                <MapPin size={11} /> {report.building}
+                {report.location ? ` — ${report.location}` : ''}
+              </span>
+              <span className="badge badge-neutral">{report.priority} priority</span>
               {report.isAnonymous ? (
-                <span className="badge badge-lilac"><EyeOff size={11} /> Anonymous Student</span>
+                <span className="badge badge-lilac"><EyeOff size={11} /> Anonymous</span>
               ) : (
-                <span className="badge badge-neutral"><User size={11} /> Reported publicly</span>
+                <span className="badge badge-neutral"><User size={11} /> Public</span>
               )}
             </div>
 
             <p style={{ fontSize: '0.9rem', lineHeight: 1.65, color: 'var(--text-secondary)' }}>{report.description}</p>
           </div>
 
-          <form className="card" onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <h3 className="section-title" style={{ marginBottom: 0 }}>Manage report</h3>
+          <div className="card">
+            <h3 className="section-title">Update report</h3>
 
             <div className="grid-2">
-              <Field label="Status" htmlFor="admin-status">
-                <Select id="admin-status" value={status} onChange={(e) => setStatus(e.target.value)}>
-                  {REPORT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+              <Field label="Status" htmlFor="r-status">
+                <Select id="r-status" value={form.status} onChange={set('status')}>
+                  {REPORT_STATUSES.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
                 </Select>
               </Field>
-              <Field label="Priority" htmlFor="admin-priority">
-                <Select id="admin-priority" value={priority} onChange={(e) => setPriority(e.target.value)}>
-                  {REPORT_PRIORITIES.map((p) => <option key={p} value={p}>{p}</option>)}
+              <Field label="Priority" htmlFor="r-priority">
+                <Select id="r-priority" value={form.priority} onChange={set('priority')}>
+                  {REPORT_PRIORITIES.map((p) => (
+                    <option key={p} value={p}>{p}</option>
+                  ))}
                 </Select>
               </Field>
             </div>
 
-            <Field label="Assigned department" htmlFor="admin-department" optional>
-              <Input id="admin-department" placeholder="e.g. Facilities Management" value={department} onChange={(e) => setDepartment(e.target.value)} />
+            <Field label="Assigned department" htmlFor="r-dept">
+              <Input id="r-dept" placeholder="e.g. Facilities, Security, IT" value={form.department} onChange={set('department')} />
             </Field>
 
-            <Field label="Internal note" htmlFor="admin-internal" optional hint="Only visible to university staff.">
-              <Textarea id="admin-internal" placeholder="Internal notes for your team..." value={internalNote} onChange={(e) => setInternalNote(e.target.value)} />
+            <Field label="Public update (visible to student)" htmlFor="r-public">
+              <Input id="r-public" placeholder="e.g. Technician assigned, visit scheduled tomorrow." value={form.publicUpdate} onChange={set('publicUpdate')} />
             </Field>
 
-            <Field label="Public update" htmlFor="admin-public" optional hint="This will be shown to the student and added to the timeline when you change status.">
-              <Textarea id="admin-public" placeholder="e.g. Maintenance has been notified and is investigating." value={publicUpdate} onChange={(e) => setPublicUpdate(e.target.value)} />
+            <Field label="Internal note (admins only)" htmlFor="r-internal">
+              <Input id="r-internal" placeholder="Internal remarks, not visible to students." value={form.internalNote} onChange={set('internalNote')} />
             </Field>
 
-            <Button type="submit" variant="primary" loading={saving} icon={Save} style={{ alignSelf: 'flex-start' }}>
-              Save update
+            <Button variant="primary" icon={Save} loading={saving} onClick={handleSave} style={{ marginTop: 8 }}>
+              Save changes
             </Button>
-          </form>
+          </div>
         </div>
 
         <div className="card">

@@ -71,6 +71,20 @@ export async function updateReportStatus(id, { status, department, priority, int
     .single();
 
   if (error) { console.error(error); return null; }
+
+  // Log status change into the timeline so students can follow progress
+  if (status !== undefined) {
+    const { error: timelineError } = await supabase
+      .from('report_timeline')
+      .insert({
+        report_id: id,
+        status,
+        note: publicUpdate || internalNote || null,
+        date: new Date().toISOString(),
+      });
+    if (timelineError) console.error('timeline insert failed:', timelineError);
+  }
+
   return normalizeReport(data);
 }
 

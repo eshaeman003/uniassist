@@ -1,29 +1,47 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, EyeOff, User } from 'lucide-react';
-import { getReportById } from '../../services/reportService';
-import { onStorageChange } from '../../services/storage';
+import { getReportById, subscribeToReports } from '../../services/reportService';
 import StatusBadge from '../../components/StatusBadge';
 import ReportTimeline from '../../components/ReportTimeline';
 import EmptyState from '../../components/EmptyState';
+import Button from '../../components/Button';
 
 export default function ReportDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [report, setReport] = useState(() => getReportById(id));
+  const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const load = () => setReport(getReportById(id));
+    let mounted = true;
+    const load = async () => {
+      const r = await getReportById(id, false);
+      if (mounted) {
+        setReport(r);
+        setLoading(false);
+      }
+    };
     load();
-    return onStorageChange(load);
+    const unsub = subscribeToReports({}, load);
+    return () => {
+      mounted = false;
+      unsub();
+    };
   }, [id]);
+
+  if (loading) return null;
 
   if (!report) {
     return (
       <EmptyState
         title="Report not found"
         description="This report may have been removed, or the link is incorrect."
-        action={<Link to="/app/reports" className="btn btn-primary btn-sm">Back to My Reports</Link>}
+        action={
+          <Link to="/app/reports">
+            <Button variant="primary" size="sm">Back to My Reports</Button>
+          </Link>
+        }
       />
     );
   }
@@ -46,7 +64,9 @@ export default function ReportDetails() {
 
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
             <span className="badge badge-neutral">{report.category}</span>
-            <span className="badge badge-neutral"><MapPin size={11} /> {report.building}{report.location ? ` — ${report.location}` : ''}</span>
+            <span className="badge badge-neutral">
+              <MapPin size={11} /> {report.building}{report.location ? ` — ${report.location}` : ''}
+            </span>
             <span className="badge badge-neutral">{report.priority} priority</span>
             {report.isAnonymous ? (
               <span className="badge badge-lilac"><EyeOff size={11} /> Submitted anonymously</span>
@@ -56,6 +76,13 @@ export default function ReportDetails() {
           </div>
 
           <p style={{ fontSize: '0.9rem', lineHeight: 1.65, color: 'var(--text-secondary)' }}>{report.description}</p>
+
+          {report.publicUpdate && (
+            <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: 'var(--bg-subtle)' }}>
+              <strong style={{ fontSize: '0.82rem' }}>Update from administration:</strong>
+              <p style={{ fontSize: '0.88rem', marginTop: 4, color: 'var(--text-secondary)' }}>{report.publicUpdate}</p>
+            </div>
+          )}
         </div>
 
         <div className="card">
