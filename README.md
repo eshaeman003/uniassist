@@ -2,8 +2,8 @@
 
 UniAssist is a campus safety and student-services platform. Students can submit incident reports and post lost & found items for their university; administrators triage, update, and resolve them from a dedicated dashboard. Each university's data is isolated from every other university's.
 
-**Live demo:** _add your Vercel URL here after deploying_
-**Status:** Prototype / internship project — not production-hardened.
+**Live demo:** 
+**Status:**  internship project 
 
 ---
 
