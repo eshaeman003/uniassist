@@ -2,7 +2,8 @@
 
 UniAssist is a **full-stack campus safety and student-services web application**. Students can submit incident reports and post Lost & Found items for their university, while administrators can triage, update, and resolve reports through a dedicated dashboard. The platform supports multiple universities with isolated data for each institution.
 
-**Live Demo:** —
+**Live Demo:** https://uniassist-6ave58ybm-ngo-connect.vercel.app/
+
 **Project Type:** Full-Stack Web Application
 
 ---
